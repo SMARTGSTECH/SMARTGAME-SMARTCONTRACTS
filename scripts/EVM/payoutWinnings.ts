@@ -9,19 +9,26 @@ dotenv.config();
 
 const EVM_PRIVATE_KEY = process.env.EVM_PRIVATE_KEY || "";
 
-const BASE_TESTNET_SMARTBET_CONTRACT_ADDRESS = process.env.BASE_TESTNET_SMARTBET_CONTRACT_ADDRESS || "";
+const BASE_TESTNET_SMARTBET_CONTRACT_ADDRESS =
+  process.env.BASE_TESTNET_SMARTBET_CONTRACT_ADDRESS || "";
 
-const BASE_MAINNET_SMARTBET_CONTRACT_ADDRESS = process.env.BSC_MAINNET_SMARTBET_CONTRACT_ADDRESS || "";
+const BASE_MAINNET_SMARTBET_CONTRACT_ADDRESS =
+  process.env.BASE_MAINNET_SMARTBET_CONTRACT_ADDRESS || "";
 
-const payoutWinnigs = async (chain: ChainsEnum, winners: IWinner[], tokenOption: TokenOptionsEnum) => {
+const payoutWinnigs = async (
+  chain: ChainsEnum,
+  winners: IWinner[],
+  tokenOption: TokenOptionsEnum
+) => {
   let SMARTBET_CONTRACT_ADDRESS = "";
   let wallet: ethers.ethers.Wallet | undefined;
-
 
   if (chain === ChainsEnum.BASE_TESTNET) {
     SMARTBET_CONTRACT_ADDRESS = BASE_TESTNET_SMARTBET_CONTRACT_ADDRESS;
 
-    const provider = new ethers.JsonRpcProvider(process.env.BASE_TESTNET_RPC_URL);
+    const provider = new ethers.JsonRpcProvider(
+      process.env.BASE_TESTNET_RPC_URL
+    );
 
     wallet = new ethers.Wallet(EVM_PRIVATE_KEY, provider);
   }
@@ -29,7 +36,9 @@ const payoutWinnigs = async (chain: ChainsEnum, winners: IWinner[], tokenOption:
   if (chain === ChainsEnum.BASE_MAINNET) {
     SMARTBET_CONTRACT_ADDRESS = BASE_MAINNET_SMARTBET_CONTRACT_ADDRESS;
 
-    const provider = new ethers.JsonRpcProvider(process.env.BASE_MAINNET_RPC_URL);
+    const provider = new ethers.JsonRpcProvider(
+      process.env.BASE_MAINNET_RPC_URL
+    );
 
     wallet = new ethers.Wallet(EVM_PRIVATE_KEY, provider);
   }
@@ -38,9 +47,16 @@ const payoutWinnigs = async (chain: ChainsEnum, winners: IWinner[], tokenOption:
 
   const [company] = await hre.ethers.getSigners();
 
-  const SmartBetHardHat = await hre.ethers.getContractFactory("SmartBet", company);
+  const SmartBetHardHat = await hre.ethers.getContractFactory(
+    "SmartBet",
+    company
+  );
 
-  const smartBet = new ethers.Contract(SMARTBET_CONTRACT_ADDRESS, SmartBetHardHat.interface, wallet);
+  const smartBet = new ethers.Contract(
+    SMARTBET_CONTRACT_ADDRESS,
+    SmartBetHardHat.interface,
+    wallet
+  );
 
   if (tokenOption === TokenOptionsEnum.NATIVE) {
     console.log("Sending Native Token Payout for network: ", chain);
